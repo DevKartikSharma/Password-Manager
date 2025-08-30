@@ -61,7 +61,7 @@ MONGO_URI=your-mongodb-connection-string
 
 Start backend server:
 ```bash
-npm start
+node --watch server.js
 ```
 **Backend runs at:** `http://localhost:3000`
 
