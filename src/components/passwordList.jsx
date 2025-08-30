@@ -11,7 +11,7 @@ const passwordList = ({ setDetails, details, handleDelete, handleEdit }) => {
     const isMobile = useMediaQuery("(max-width: 1024px)");
     const handleShow = (id) => {
         let updatedDetails = details.map((detail) => (
-            (detail.id === id) ? { ...detail, show: !detail.show } : detail
+            (detail._id === id) ? { ...detail, show: !detail.show } : detail
         ))
         setDetails(updatedDetails)
     }
@@ -33,11 +33,11 @@ const passwordList = ({ setDetails, details, handleDelete, handleEdit }) => {
             <ul className='space-y-2'>
                 {
                     details.map((detail) => (
-                        <li key={detail.id} className=" grid grid-flow-col grid-cols-5 items-center refrence w-full font-light text-black h-10 bg-[rgba(159,126,250,0.23)] rounded-[7px]">
+                        <li key={detail._id} className=" grid grid-flow-col grid-cols-5 items-center refrence w-full font-light text-black h-10 bg-[rgba(159,126,250,0.23)] rounded-[7px]">
                             <span className='col-span-2 flex justify-center items-center space-x-1'><IoCopyOutline className="cursor-pointer" onClick={() => handleCopy(detail.site)} /><span>{detail.site}</span></span>
                             <span className=' flex justify-center items-center space-x-1'><IoCopyOutline className="cursor-pointer" onClick={() => handleCopy(detail.username)} /><span>{detail.username} </span></span>
-                            <span className=' flex justify-center items-center space-x-1'><IoCopyOutline className="cursor-pointer" onClick={() => handleCopy(detail.pass)} /><span className="flex justify-center items-center gap-2">{(detail.show) ? detail.pass : '•'.repeat(detail.pass.length)} {(detail.show) ? <LuEye onClick={() => handleShow(detail.id)} /> : <LuEyeClosed onClick={() => handleShow(detail.id)} />}</span></span>
-                            <span className=' flex justify-center items-center space-x-2'><Edit onClick={() => handleEdit(detail.id)} /><Delete onClick={() => handleDelete(detail.id)} /></span>
+                            <span className=' flex justify-center items-center space-x-1'><IoCopyOutline className="cursor-pointer" onClick={() => handleCopy(detail.pass)} /><span className="flex justify-center items-center gap-2">{(detail.show) ? detail.pass : '•'.repeat(detail.pass.length)} {(detail.show) ? <LuEye onClick={() => handleShow(detail._id)} /> : <LuEyeClosed onClick={() => handleShow(detail._id)} />}</span></span>
+                            <span className=' flex justify-center items-center space-x-2'><Edit onClick={() => handleEdit(detail._id)} /><Delete onClick={() => handleDelete(detail._id)} /></span>
                         </li>
                     ))
                 }
@@ -46,7 +46,7 @@ const passwordList = ({ setDetails, details, handleDelete, handleEdit }) => {
         ):<ul className="space-y-3 overflow-scroll h-[210px] flex flex-col items-center py-3">
     {details.map((detail) => (
       <li
-        key={detail.id}
+        key={detail._id}
         className="flex flex-col w-[50%] max-md:w-[80%] bg-[rgba(159,126,250,0.15)] text-black text-sm rounded-md max-sm:w-[90%] p-4  max-lg:w-[70%] shadow-sm  justify-center items-center"
       >
         {/* Info Section */}
@@ -87,12 +87,12 @@ const passwordList = ({ setDetails, details, handleDelete, handleEdit }) => {
               {detail.show ? (
                 <LuEye
                   className="cursor-pointer hover:text-purple-700"
-                  onClick={() => handleShow(detail.id)}
+                  onClick={() => handleShow(detail._id)}
                 />
               ) : (
                 <LuEyeClosed
                   className="cursor-pointer hover:text-purple-700"
-                  onClick={() => handleShow(detail.id)}
+                  onClick={() => handleShow(detail._id)}
                 />
               )}
               <IoCopyOutline
@@ -108,8 +108,8 @@ const passwordList = ({ setDetails, details, handleDelete, handleEdit }) => {
 
         {/* Actions */}
         <div className="flex justify-center items-center gap-6">
-          <Edit onClick={() => handleEdit(detail.id)} />
-          <Delete onClick={() => handleDelete(detail.id)} />
+          <Edit onClick={() => handleEdit(detail._id)} />
+          <Delete onClick={() => handleDelete(detail._id)} />
         </div>
       </li>
     ))}

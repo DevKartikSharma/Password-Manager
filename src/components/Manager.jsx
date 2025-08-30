@@ -9,44 +9,76 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 const Manager = () => {
-    const [details, SetDetails] = useState(() => {
-        return JSON.parse(localStorage.getItem("details")) || []
-    })
+
+    const fetchFromDB = async () => {
+        try {
+            let res = await fetch("http://localhost:3000/")
+            let passwords = await res.json()
+            return Array.isArray(passwords) ? passwords : []
+        } catch (e) {
+            console.log(e);
+            return []
+        }
+
+    }
+
+    const SetPassFromDB = async () => {
+        const passwords = await fetchFromDB()
+        SetDetails(passwords)
+    }
+
+    const [details, SetDetails] = useState([])
     const siteRef = useRef()
     const usernameRef = useRef()
     const passRef = useRef()
 
-    const handleSubmit = () => {
-        const randomNumber = random.int(1000, 9999);
+    useEffect(() => {
+        SetPassFromDB()
+    }, [])
+    const handleSubmit = async () => {
         const Site = siteRef.current.value
         const Username = usernameRef.current.value
         const Pass = passRef.current.value
         if (Site && Username && Pass) {
-            SetDetails([...details, { id: randomNumber, site: Site, username: Username, pass: Pass, show: false }])
-            console.log('password saved');
-            toast.success('Password Saved');
+            try {
+
+                const passTobeAdd = { site: Site, username: Username, pass: Pass, show: false }
+                const res = await fetch("http://localhost:3000/", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(passTobeAdd)
+                })
+                const response = await res.json()
+                console.log(response);
+                SetPassFromDB()
+                toast.success('Password Saved');
+            } catch (err) {
+                console.log(err);
+            }
         }
         else {
-            console.log('please fill all fields');
+            toast.error('Fill all details first')
         }
         siteRef.current.value = ''
         usernameRef.current.value = ''
         passRef.current.value = ''
     }
 
-    const handleDelete = (id) => {
-        const updatedDetails = details.filter((detail) => (detail.id !== id))
-        SetDetails(updatedDetails)
+    const handleDelete = async (id) => {
+        const res = await fetch(`http://localhost:3000/${id}`, { method: 'DELETE' })
+        const response = await res.json()
+        console.log(response);
+
+        await SetPassFromDB()
         toast.success('Password deleted');
     }
 
-    const handleEdit = (id) => {
-        const element = details.find((detail) => (detail.id === id))
+    const handleEdit = async (id) => {
+        const element = details.find((detail) => (detail._id === id))
         siteRef.current.value = element.site
         usernameRef.current.value = element.username
         passRef.current.value = element.pass
-        const updatedDetails = details.filter((detail) => (detail.id !== id))
-        SetDetails(updatedDetails)
+        await handleDelete(id)
     }
 
     useEffect(() => {
@@ -89,12 +121,12 @@ const Manager = () => {
                 <div className="addSection flex justify-center flex-col bg-[#d6c5ff4b] h-10vh p-5 rounded-[10px] w-[80%] max-sm:w-full gap-1">
                     <div className="inputs grid space-y-1 justify-center m-auto items-center w-[60%] max-md:w-full max-xl:flex max-xl:flex-col">
 
-                        <input type="text" ref={siteRef} placeholder='Enter URL' className='flex border-transparent outline-none rounded-[10px] bg-[rgba(158,126,247,0.4)] placeholder:text-white p-2 pl-4 focus:border focus:border-black border-[1px] text-white max-xl:w-full  ' />
+                        <input type="text" ref={siteRef} placeholder='Enter URL' className='flex cursor-default border-transparent outline-none rounded-[10px] bg-[rgba(158,126,247,0.4)] placeholder:text-white p-2 pl-4 focus:border focus:border-black border-[1px] text-white max-xl:w-full  ' />
 
                         <div className='grid grid-flow-col grid-cols-6 space-x-1 relative max-xl:flex max-xl:flex-col max-xl:gap-1 max-xl:w-full'>
-                            <input type="text" ref={usernameRef} placeholder='Username' className='  col-span-4 border-transparent outline-none rounded-[10px] bg-[rgba(158,126,247,0.4)] text-white placeholder:text-white p-2 pl-4 focus:border focus:border-black border-[1px] max-xl:mr-0 ' />
+                            <input type="text" ref={usernameRef} placeholder='Username' className='  col-span-4 cursor-default border-transparent outline-none rounded-[10px] bg-[rgba(158,126,247,0.4)] text-white placeholder:text-white p-2 pl-4 focus:border focus:border-black border-[1px] max-xl:mr-0 ' />
 
-                            <input type={(show) ? "text" : "password"} ref={passRef} placeholder='Password ' className='  col-span-2 border-transparent outline-none rounded-[10px] bg-[rgba(158,126,247,0.4)] text-white placeholder:text-white p-2 pl-4 pr-10 mr-0 focus:border focus:border-black border-[1px]' />
+                            <input type={(show) ? "text" : "password"} ref={passRef} placeholder='Password ' className='  cursor-default col-span-2 border-transparent outline-none rounded-[10px] bg-[rgba(158,126,247,0.4)] text-white placeholder:text-white p-2 pl-4 pr-10 mr-0 focus:border focus:border-black border-[1px]' />
                             {(show) ? <LuEye onClick={handleShow} className='text-white absolute top-3 right-4 max-xl:top-[59px]' /> : <LuEyeClosed onClick={handleShow} className='text-white absolute top-3 max-xl:top-[59px] right-4' />}
                         </div>
                     </div>
@@ -107,7 +139,7 @@ const Manager = () => {
                         Passwords:
                     </div>
                     {
-                        (details.length > 0) ? <PasswordList setDetails={SetDetails} details={details} handleEdit={handleEdit} handleDelete={handleDelete} /> : 'No Passwords are saved!'
+                        (details?.length > 0) ? <PasswordList setDetails={SetDetails} details={details} handleEdit={handleEdit} handleDelete={handleDelete} /> : 'No Passwords are saved!'
                     }
                 </div>
             </div>
