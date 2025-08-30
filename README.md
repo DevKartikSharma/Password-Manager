@@ -146,7 +146,7 @@ video 130 - Password Manager/
 
 Create `.env` file in `backend/` directory:
 ```env
-MONGO_URI=mongodb://localhost:27017/PassManager
+MONGO_URI=yourURI of mongodb here:
 # or for MongoDB Atlas:
 # MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/PassManager
 ```
