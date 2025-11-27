@@ -3,7 +3,6 @@ import PasswordList from './passwordList';
 import Logo from '../assets/logo'
 import Add from '../assets/add'
 import { LuEyeClosed, LuEye } from "react-icons/lu";
-import random from 'random'
 import { ToastContainer, toast } from 'react-toastify';
 
 
