@@ -1,7 +1,9 @@
-const express = require('express');
-const { MongoClient, ObjectId } = require('mongodb');
-const cors = require('cors');
-require('dotenv').config();
+import express from 'express';
+import { MongoClient, ObjectId } from 'mongodb';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -65,4 +67,4 @@ app.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = app;
+export default app;
