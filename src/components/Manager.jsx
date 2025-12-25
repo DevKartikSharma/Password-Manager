@@ -8,10 +8,11 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 const Manager = () => {
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api'
 
     const fetchFromDB = async () => {
         try {
-            let res = await fetch("http://localhost:3000/")
+            let res = await fetch(BACKEND_URL)
             let passwords = await res.json()
             return Array.isArray(passwords) ? passwords : []
         } catch (e) {
@@ -42,9 +43,9 @@ const Manager = () => {
             try {
 
                 const passTobeAdd = { site: Site, username: Username, pass: Pass, show: false }
-                const res = await fetch("http://localhost:3000/", {
+                const res = await fetch(BACKEND_URL, {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(passTobeAdd)
                 })
                 const response = await res.json()
@@ -64,7 +65,7 @@ const Manager = () => {
     }
 
     const handleDelete = async (id) => {
-        const res = await fetch(`http://localhost:3000/${id}`, { method: 'DELETE' })
+        const res = await fetch(`${BACKEND_URL}/${id}`, { method: 'DELETE' })
         const response = await res.json()
         console.log(response);
 

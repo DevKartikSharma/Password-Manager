@@ -1,55 +1,60 @@
-import dotenv from 'dotenv'
-import express from 'express'
-import { MongoClient } from 'mongodb'
-import cors from 'cors';
-import { ObjectId } from 'mongodb';
+import dotenv from "dotenv";
+import express from "express";
+import { MongoClient, ObjectId } from "mongodb";
+import cors from "cors";
 
-const app = express()
-const port = 3000
+dotenv.config();
 
-dotenv.config()
+const app = express();
+const port = 5000;
+
 app.use(cors());
 app.use(express.json());
 
-
-// Connection URL
+// MongoDB connection
 const url = process.env.MONGO_URI;
+if (!url) {
+  console.error("❌ MONGO_URI is missing in .env");
+  process.exit(1);
+}
+
 const client = new MongoClient(url);
 
-// Database Name
-const dbName = 'PassManager';
+// Database
+const dbName = "PassManager";
+
 await client.connect();
-console.log('Connected successfully to server');
+console.log("✅ Connected successfully to MongoDB");
+
 const db = client.db(dbName);
-const collection = db.collection('passwords');
+const collection = db.collection("passwords");
 
-app.get('/', async (req, res) => {
+// Routes
+app.get("/", async (req, res) => {
   const findResult = await collection.find({}).toArray();
-  console.log('Found documents =>', findResult);
-  res.send(findResult)
+  res.json(findResult);
+});
 
-})
-app.post('/', async (req, res) => {
-  try{ 
+app.post("/", async (req, res) => {
+  try {
     const passwords = req.body;
-    let insertedpass = await collection.insertOne(passwords);
-    res.send(insertedpass)
-  }catch(err){
+    const insertedpass = await collection.insertOne(passwords);
+    res.json(insertedpass);
+  } catch (err) {
     res.status(500).json({ error: "Failed to insert password" });
   }
-})
+});
 
-app.delete('/:id', async (req, res) => {
-  try{
-
-    const id = req.params.id
+app.delete("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
     await collection.deleteOne({ _id: new ObjectId(id) });
-    res.send({success:true})
-  }catch(err){
+    res.json({ success: true });
+  } catch (err) {
     res.status(500).json({ error: "Failed to delete password" });
   }
-})
- 
+});
+
 app.listen(port, () => {
-  console.log(`Examle app listening on port ${port}`)
-})
+  console.log(`🚀 Backend running on http://localhost:${port}`);
+});
