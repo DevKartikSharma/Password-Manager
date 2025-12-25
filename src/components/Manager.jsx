@@ -142,6 +142,9 @@ const Manager = () => {
                         (details?.length > 0) ? <PasswordList setDetails={SetDetails} details={details} handleEdit={handleEdit} handleDelete={handleDelete} /> : 'No Passwords are saved!'
                     }
                 </div>
+                <div className="passSection bg-[#d6c5ff4b] text-xl h-fit font-mono max-sm:h-[270px] p-5 text-center text-[rgb(88,88,88)] rounded-[10px] w-[80%] max-sm:w-full max-xl:w-[100%] max-lg:w-[80%]">
+                    <p>This site is connected to our database. For your privacy, we have temporarily stopped the site's functionality. We are working on it to ensure your data is fully encrypted.</p>
+                </div>
             </div>
         </div>
         </div>
